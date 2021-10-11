@@ -1,21 +1,16 @@
 <?php
-
 namespace Live\Collection;
-
 /**
  * Memory collection
- *
  * @package Live\Collection
  */
 class MemoryCollection implements CollectionInterface
 {
     /**
      * Collection data
-     *
      * @var array
      */
     protected $data;
-
     /**
      * Constructor
      */
@@ -23,7 +18,6 @@ class MemoryCollection implements CollectionInterface
     {
         $this->data = [];
     }
-
     /**
      * {@inheritDoc}
      */
@@ -32,34 +26,30 @@ class MemoryCollection implements CollectionInterface
         if (!$this->has($index)) {
             return $defaultValue;
         }
-
-        return $this->data[$index];
+        return $this->data[$index]['value'];
     }
-
     /**
      * {@inheritDoc}
      */
-    public function set(string $index, $value)
+    public function set(string $index, $value, $timeVar = 1)
     {
-        $this->data[$index] = $value;
-    }
 
+        $this->data[$index] = ['value'=> $value, 'expires'=> time() + $timeVar ];
+    }
     /**
      * {@inheritDoc}
      */
     public function has(string $index)
     {
-        return array_key_exists($index, $this->data);
+        return array_key_exists($index, $this->data) && time() <= $this->data[$index]['expires'];
     }
-
     /**
      * {@inheritDoc}
      */
     public function count(): int
     {
-        return count($this->data) + 1;
+        return count($this->data);
     }
-
     /**
      * {@inheritDoc}
      */
